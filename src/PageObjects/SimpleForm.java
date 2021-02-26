@@ -2,7 +2,6 @@ package PageObjects;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
@@ -25,11 +24,6 @@ public class SimpleForm {
     WebElement firstFormMessage;
     @FindBy(xpath = "//span[@id=\"displayvalue\"]")
     WebElement secondFormResult;
-
-    public SimpleForm(){
-        this.driver = new FirefoxDriver();
-        PageFactory.initElements(driver, this);
-    }
 
     public SimpleForm(WebDriver driver){
         this.driver = driver;

@@ -2,7 +2,6 @@ package PageObjects;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -12,11 +11,6 @@ public class HomePage {
     WebElement inputFormsLink;
     @FindBy(xpath="//li[@class=\"tree-branch\"]//a[text()=\"Simple Form Demo\"]")
     WebElement simpleFormDemoLink;
-
-    public HomePage(){
-        this.driver = new FirefoxDriver();
-        PageFactory.initElements(driver, this);
-    }
 
     public HomePage(WebDriver driver){
         this.driver = driver;
