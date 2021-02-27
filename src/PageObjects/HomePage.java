@@ -22,7 +22,7 @@ public class HomePage {
     }
 
     public void OpenSimpleFormDemoPage(){
-        this.OpenInputFormsMenu();
+        OpenInputFormsMenu();
         simpleFormDemoLink.click();
     }
 
