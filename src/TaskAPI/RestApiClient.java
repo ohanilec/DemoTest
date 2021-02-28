@@ -20,7 +20,6 @@ public class RestApiClient {
         Scanner scanner = new Scanner( jsonFile, "UTF-8" );
 
         String inputJSON = scanner.useDelimiter("\\A").next();
-        System.out.println("1. " + inputJSON);
         JSONObject jsonObject = new JSONObject(inputJSON);
 
         String name = jsonObject.getString("name");
