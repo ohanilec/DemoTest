@@ -1,58 +1,48 @@
 package TaskAPI;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class RestApiClient {
 
     public static void main(String[] args) throws IOException{
+        String fileName = "./src/TaskAPI/inputJson";
+        File jsonFile = new File(fileName);
+        Scanner scanner = new Scanner( jsonFile, "UTF-8" );
 
-        String inputJSON = "{\"name\": \"Jed I. Knight\",\"birthYear\": \"2563\",\"about\": \"The force is strong with this one\"}";
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("input JSON string");
-        String jsonString = inputJSON;
-        System.out.println(jsonString);
-        JSONObject jsonObject = new JSONObject(jsonString);
-        scanner.close();
+        String inputJSON = scanner.useDelimiter("\\A").next();
+        System.out.println("1. " + inputJSON);
+        JSONObject jsonObject = new JSONObject(inputJSON);
 
         String name = jsonObject.getString("name");
         String birthYear = jsonObject.getString("birthYear");
         String about = jsonObject.getString("about");
+
         System.out.println(name + " " + birthYear + " " + about);
 
-        setPersonData(name, birthYear, about );
+        setPersonData(jsonFile);
     }
 
-    public static void setPersonData(String name, String birthYear, String about) throws IOException{
-        HttpURLConnection connection = (HttpURLConnection) new URL("http://localhost:9200/people/" + name).openConnection();
+    public static void setPersonData(File jsonFile) throws IOException{
+        HttpEntity  entity = new FileEntity(jsonFile);
+        HttpPost post = new HttpPost("http://localhost:9200/people/_doc/");
+        post.setEntity(entity);
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        HttpClient client = clientBuilder.build();
+        post.addHeader("content-type", "application/json");
+        post.addHeader("Accept","application/json");
+        HttpResponse response = client.execute(post);
+        System.out.println("Response: " + response);
 
-        connection.setRequestMethod("POST");
 
-        String postData = "name=" + URLEncoder.encode(name, "UTF-8");
-        postData += "&about=" + URLEncoder.encode(about, "UTF-8");
-        postData += "&birthYear=" + birthYear;
-
-        connection.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-        wr.write(postData);
-        wr.flush();
-
-        int responseCode = connection.getResponseCode();
-        if(responseCode == 200){
-            System.out.println("POST was successful.");
-        }
-        else if(responseCode == 401){
-            System.out.println("Wrong password.");
-        }
-        else{
-            System.out.println("Just wrong");
-        }
     }
 }
